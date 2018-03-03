@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 
@@ -22,33 +21,29 @@ var (
 
 func main() {
 	var err error
-	var status bool
 
 	flag.Parse()
 
 	if *action == "" {
-		log.Print("No action selected. Exiting...")
 		os.Exit(1)
-		return
 	}
 
 	dsnConn := buildDatasourceName()
 
 	switch *action {
 	case "createDB":
-		err = db.newDB(*dbName, dsnConn)
+		err = db.NewDB(*dbName, dsnConn)
 	case "deleteDB":
-		err = db.removeDB(*dbName, dsnConn)
+		err = db.RemoveDB(*dbName, dsnConn)
 	default:
 		return
 	}
 
 	if err != nil {
-		return
+		os.Exit(1)
 	}
 
 	os.Exit(0)
-
 }
 
 func buildDatasourceName() string {
@@ -73,7 +68,6 @@ func buildDatasourceName() string {
 	}
 
 	if *dbHost == "" || (*dbPort <= 1024 || *dbPort >= 65535) || *dbName == "" || *dbUser == "" {
-		log.Print("Invalid values on DSN creation.")
 		return ""
 	}
 
