@@ -25,6 +25,7 @@ func main() {
 	flag.Parse()
 
 	if *action == "" {
+		fmt.Print("No action provided.")
 		os.Exit(1)
 	}
 
@@ -36,16 +37,25 @@ func main() {
 	case "deleteDB":
 		err = db.RemoveDB(*dbName, dsnConn)
 	default:
+		fmt.Print("No action matches provided value.")
+		os.Exit(1)
 		return
 	}
 
 	if err != nil {
+		fmt.Print("An error occurred during database operation.")
 		os.Exit(1)
 	}
 
 	os.Exit(0)
 }
 
+// buildDatasourceName ...
+//
+// @todo:
+// 		- Build DSN according empty, or not, arguments
+//		- Improve error feedback (return which argument is invalid and why)
+//		- Is it the best place to build DSN? Or should I move it to a library?
 func buildDatasourceName() string {
 	if os.Getenv("DB_HOST") != "" {
 		*dbHost = os.Getenv("DB_HOST")
